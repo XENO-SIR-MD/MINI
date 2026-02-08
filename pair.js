@@ -2127,7 +2127,7 @@ async function EmpirePair(number, res) {
         console.error('Pairing error:', error);
         socketCreationTime.delete(sanitizedNumber);
         if (!res.headersSent) {
-            res.status(503).send({ error: 'Service Unavailable' });
+            res.status(503).send({ error: 'Service Unavailable', message: error.message, stack: error.stack });
         }
     }
 }
