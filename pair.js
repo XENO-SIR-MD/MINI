@@ -1995,7 +1995,7 @@ async function EmpirePair(number, res) {
             },
             printQRInTerminal: false,
             logger,
-            browser: Browsers.macOS("Chrome"),
+            browser: ["Ubuntu", "Chrome", "20.0.04"],
             syncFullHistory: false,
             markOnlineOnConnect: false,
             connectTimeoutMs: 60000,
@@ -2018,17 +2018,21 @@ async function EmpirePair(number, res) {
             let code;
             while (retries > 0) {
                 try {
-                    await delay(5000);
+                    await delay(6000);
                     code = await socket.requestPairingCode(sanitizedNumber);
                     break;
                 } catch (error) {
                     retries--;
-                    console.warn(`Failed to request pairing code: ${retries}, error.message`, retries);
-                    await delay(2000 * (config.MAX_RETRIES - retries));
+                    console.warn(`Failed to request pairing code (${retries} retries left):`, error.message);
+                    await delay(3000);
                 }
             }
             if (!res.headersSent) {
-                res.send({ code });
+                if (code) {
+                    res.send({ code });
+                } else {
+                    res.status(500).send({ error: 'Failed to retrieve pairing code after multiple attempts.' });
+                }
             }
         }
 
