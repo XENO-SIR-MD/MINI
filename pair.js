@@ -38,7 +38,7 @@ const config = {
     MAX_RETRIES: 3,
     GROUP_INVITE_LINK: 'xenosir.vercel.app_copy_t',
     ADMIN_LIST_PATH: './admin.json',
-    RCD_IMAGE_PATH: 'https://files.catbox.moe/ij723m.jpeg',
+    RCD_IMAGE_PATH: 'https://files.catbox.moe/3g1rqf.jpg',
     NEWSLETTER_JID: '120363419768005709@newsletter',
     NEWSLETTER_MESSAGE_ID: '428',
     OTP_EXPIRY: 300000,
