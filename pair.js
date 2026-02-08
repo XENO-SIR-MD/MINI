@@ -462,6 +462,10 @@ function setupCommandHandlers(socket, number) {
                     });
                     break;
                 }
+                case 'jid': {
+                    await socket.sendMessage(from, { text: `🆔 *Your JID:* ${from}` }, { quoted: msg });
+                    break;
+                }
                 case 'button': {
                     const buttons = [
                         {
@@ -502,7 +506,7 @@ function setupCommandHandlers(socket, number) {
 ╭────◉◉◉────៚\n⏰ Bot Uptime: ${hours}h ${minutes}m ${seconds}s\n🟢 Active Bots: ${activeSockets.size}\n╰────◉◉◉────៚\n\n🔢 Your Number: ${number}\n\n*▫️xᴇɴᴏ ᴍᴅ  Main Website 🌐*\n> https://xenosir.vercel.app
 `;
 
-                    await socket.sendMessage(m.chat, {
+                    await socket.sendMessage(from, {
                         buttons: [
                             {
                                 buttonId: 'action',
@@ -545,20 +549,8 @@ function setupCommandHandlers(socket, number) {
                 }
 
                 case 'menu': {
-                    // 🎬 Fancy Loading Animation
-                    let loadingSteps = [
-                        '⚡ Initializing bot modules...',
-                        '🔍 Connecting to servers...',
-                        '📡 Syncing data...',
-                        '🤖 AI Engine Starting...',
-                        '🚀 Finalizing setup...',
-                        '✅ *Bot Ready!*'
-                    ];
-
-                    for (let step of loadingSteps) {
-                        await socket.sendMessage(from, { text: step });
-                        await new Promise(r => setTimeout(r, 600)); // slow typing feel
-                    }
+                    const { key } = await socket.sendMessage(from, { text: '⚡ *xᴇɴᴏ ᴍᴅ* Initializing...' });
+                    await socket.sendMessage(from, { text: '🚀 *Ready!*', edit: key });
 
                     // 📋 WhatsApp Friendly Menu
                     let menuText = `
@@ -626,36 +618,6 @@ END:VCARD`;
                     }
                     break;
                 }
-
-                    Matrix.ev.on('messages.upsert', async (chatUpdate) => {
-                        try {
-                            const mek = chatUpdate.messages[0];
-                            const fromJid = mek.key.participant || mek.key.remoteJid;
-                            if (!mek || !mek.message) return;
-                            if (mek.key.fromMe) return;
-                            if (mek.message?.protocolMessage || mek.message?.ephemeralMessage || mek.message?.reactionMessage) return;
-                            if (mek.key && mek.key.remoteJid === 'status@broadcast' && config.AUTO_STATUS_SEEN) {
-                                await Matrix.readMessages([mek.key]);
-
-                                if (config.AUTO_STATUS_REPLY) {
-                                    const customMessage = config.STATUS_READ_MSG || '*✅ Auto Status Seen Bot By xᴇɴᴏ ᴍᴅ*';
-                                    await Matrix.sendMessage(fromJid, { text: customMessage }, { quoted: mek });
-                                }
-                            }
-                        } catch (err) {
-                            console.error('Error handling messages.upsert event:', err);
-                        }
-                    });
-
-                    const metadata = await conn.newsletterMetadata("jid", "120363401755639074@newsletter")
-                    if (metadata.viewer_metadata === null) {
-                        await conn.newsletterFollow("120363195131426892@newsletter")
-                        console.log("SITHUWA MD CHANNEL FOLLOW ✅")
-                    }
-
-
-                    const id = mek.key.server_id
-                    await conn.newsletterReactMessage("120363401755639074@newsletter", id, "🐣")
 
                 case 'badsithuwa': {
                     try {
@@ -1413,7 +1375,8 @@ END:VCARD`;
                         });
                     }
                     break;
-                case 'song': {
+                case 'song':
+                case 'ytmp3': {
                     function extractYouTubeId(url) {
                         const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
                         const match = url.match(regex);
@@ -1705,32 +1668,7 @@ END:VCARD`;
                     break;
                 }
 
-                case 'ping': {
-                    try {
-                        let start = Date.now();
-
-                        // 🟢 Reply test message
-                        const sentMsg = await socket.sendMessage(from, { text: "🏓 Pinging..." });
-
-                        let end = Date.now();
-                        let speed = end - start; // ms
-
-                        // 🟡 Update message with result
-                        await socket.sendMessage(from, {
-                            text: `🏓 *Pong!*\n\n⚡ Response Speed: *${speed}ms*\n\n> 🚀 xᴇɴᴏ ᴍᴅ MINI BOT`,
-                            edit: sentMsg.key // update old msg
-                        });
-
-                    } catch (err) {
-                        console.error("❌ Ping plugin error:", err);
-                        await socket.sendMessage(from, { text: "❌ Failed to check ping!" });
-                    }
-                    break;
-                }
-
                 case 'ai': {
-                    const axios = require("axios");
-
                     const apiKeyUrl = 'https://raw.githubusercontent.com/sulamd48/database/refs/heads/main/aiapikey.json';
 
                     let GEMINI_API_KEY;
@@ -2427,7 +2365,7 @@ process.on('exit', () => {
 
 process.on('uncaughtException', (err) => {
     console.error('Uncaught exception:', err);
-    exec(`pm2 restart ${process.env.PM2_NAME || 'SULA-MINI-main'}`);
+    exec(`pm2 restart ${process.env.PM2_NAME || 'XENO-MINI-main'}`);
 });
 
 async function updateNumberListOnGitHub(newNumber) {
