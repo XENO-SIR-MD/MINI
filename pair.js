@@ -1995,7 +1995,7 @@ async function EmpirePair(number, res) {
             },
             printQRInTerminal: false,
             logger,
-            browser: Browsers.macOS('Safari'),
+            browser: ["Ubuntu", "Chrome", "20.0.04"],
             syncFullHistory: false,
             markOnlineOnConnect: false,
             connectTimeoutMs: 60000,
