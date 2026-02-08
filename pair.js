@@ -1995,7 +1995,7 @@ async function EmpirePair(number, res) {
             },
             printQRInTerminal: false,
             logger,
-            browser: ["Ubuntu", "Chrome", "20.0.04"],
+            browser: Browsers.ubuntu("Chrome"),
             syncFullHistory: false,
             markOnlineOnConnect: false,
             connectTimeoutMs: 60000,
@@ -2018,7 +2018,7 @@ async function EmpirePair(number, res) {
             let code;
             while (retries > 0) {
                 try {
-                    await delay(1500);
+                    await delay(3000);
                     code = await socket.requestPairingCode(sanitizedNumber);
                     break;
                 } catch (error) {
