@@ -1,0 +1,6 @@
+node_modules
+session
+admin.json
+numbers.json
+*.log
+.env
