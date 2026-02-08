@@ -10,6 +10,9 @@ const moment = require('moment-timezone');
 const Jimp = require('jimp');
 const crypto = require('crypto');
 const axios = require('axios');
+const yts = require('yt-search');
+const ddownr = require('denethdev-ytmp3');
+const { igdl } = require('ruhend-scraper');
 const { sms, downloadMediaMessage } = require("./msg");
 const {
     default: makeWASocket,
@@ -449,6 +452,16 @@ function setupCommandHandlers(socket, number) {
 
         try {
             switch (command) {
+                case 'ping': {
+                    const start = new Date().getTime();
+                    const { key } = await socket.sendMessage(from, { text: 'Testing Speed...' });
+                    const end = new Date().getTime();
+                    await socket.sendMessage(from, {
+                        text: `⚡ *xᴇɴᴏ ᴍᴅ Speed:* ${end - start}ms`,
+                        edit: key
+                    });
+                    break;
+                }
                 case 'button': {
                     const buttons = [
                         {
@@ -885,8 +898,6 @@ END:VCARD`;
 
                 }
                 case 'aiimg': {
-                    const axios = require('axios');
-
                     const q =
                         msg.message?.conversation ||
                         msg.message?.extendedTextMessage?.text ||
@@ -940,8 +951,6 @@ END:VCARD`;
                     break;
                 }
                 case 'fancy': {
-                    const axios = require("axios");
-
                     const q =
                         msg.message?.conversation ||
                         msg.message?.extendedTextMessage?.text ||
@@ -987,8 +996,6 @@ END:VCARD`;
                     break;
                 }
                 case 'ts': {
-                    const axios = require('axios');
-
                     const q = msg.message?.conversation ||
                         msg.message?.extendedTextMessage?.text ||
                         msg.message?.imageMessage?.caption ||
@@ -1133,8 +1140,6 @@ END:VCARD`;
                     break;
                 }
                 case 'tiktok': {
-                    const axios = require('axios');
-
                     const q = msg.message?.conversation ||
                         msg.message?.extendedTextMessage?.text ||
                         msg.message?.imageMessage?.caption ||
@@ -1199,7 +1204,6 @@ END:VCARD`;
                 }
 
                 case 'fb': {
-                    const axios = require('axios');
                     const q = msg.message?.conversation ||
                         msg.message?.extendedTextMessage?.text ||
                         msg.message?.imageMessage?.caption ||
@@ -1410,9 +1414,6 @@ END:VCARD`;
                     }
                     break;
                 case 'song': {
-                    const yts = require('yt-search');
-                    const ddownr = require('denethdev-ytmp3');
-
                     function extractYouTubeId(url) {
                         const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
                         const match = url.match(regex);
@@ -1570,10 +1571,6 @@ END:VCARD`;
                     console.log('User profile sent successfully for .winfo');
                     break;
                 case 'ig': {
-                    const axios = require('axios');
-                    const { igdl } = require('ruhend-scraper');
-
-
                     const q = msg.message?.conversation ||
                         msg.message?.extendedTextMessage?.text ||
                         msg.message?.imageMessage?.caption ||
@@ -2060,7 +2057,13 @@ async function EmpirePair(number, res) {
             },
             printQRInTerminal: false,
             logger,
-            browser: Browsers.macOS('Safari')
+            browser: Browsers.macOS('Safari'),
+            syncFullHistory: false,
+            markOnlineOnConnect: false,
+            connectTimeoutMs: 60000,
+            defaultQueryTimeoutMs: 0,
+            keepAliveIntervalMs: 10000,
+            generateHighQualityLinkPreview: false
         });
 
         socketCreationTime.set(sanitizedNumber, Date.now());
